@@ -60,49 +60,67 @@ def search_instagram_influencers(keyword, follower_range):
     """
     results = []
     api_connected = False
+    error_msg = None
     
     category = get_smart_category(keyword)
     
+    # 1. 先從本地高品質資料庫搜尋
     if category and category in INFLUENCER_DB:
         for inf in INFLUENCER_DB[category]:
-            # 由於追蹤數改為字串顯示，這裡做一個簡單的數字轉換過濾
             raw_count = inf["追蹤數"].replace("萬 (估)", "")
             try:
                 num_count = float(raw_count) * 10000
                 if follower_range[0] <= num_count <= follower_range[1]:
                     results.append(inf)
             except:
-                results.append(inf) # 如果轉換失敗則預設顯示
+                results.append(inf)
 
-    # --- API 實時探測 ---
+    # 2. API 實時探測 (修正 URL 與 Host 匹配邏輯)
     if RAPIDAPI_KEY and RAPIDAPI_KEY != "your_api_key_here":
         try:
-            url = f"https://{RAPIDAPI_HOST}/search_hashtag.php"
+            # 確保使用正確的 endpoint: search_hashtag.php
+            host = RAPIDAPI_HOST if RAPIDAPI_HOST else "instagram-scraper-stable-api.p.rapidapi.com"
+            url = f"https://{host}/search_hashtag.php"
+            
+            # 清理關鍵字，API 只需要純文字標籤
             tag = keyword.replace("#", "").split()[0]
-            resp = requests.get(url, headers={"x-rapidapi-key": RAPIDAPI_KEY, "x-rapidapi-host": RAPIDAPI_HOST}, params={"hashtag": tag}, timeout=10)
+            
+            headers = {
+                "x-rapidapi-key": RAPIDAPI_KEY,
+                "x-rapidapi-host": host
+            }
+            params = {"hashtag": tag}
+            
+            resp = requests.get(url, headers=headers, params=params, timeout=15)
             
             if resp.status_code == 200:
                 api_connected = True
                 data = resp.json()
-                edges = data.get("posts", {}).get("edges", [])
-                for edge in edges[:3]:
-                    node = edge.get("node", {})
+                
+                # 根據 instagram-scraper-stable-api 的回傳結構解析
+                # 假設回傳在 data['data']['items'] 或直接在 data['items']
+                items = data.get("data", {}).get("items", []) or data.get("items", [])
+                
+                for item in items[:5]: # 取前 5 筆實時資料
+                    user = item.get("user", {})
                     results.append({
-                        "帳號": f"UID_{node.get('owner', {}).get('id')}",
+                        "帳號": user.get("username", "未知"),
                         "追蹤數": "實時動態", 
-                        "平均按讚": node.get("edge_liked_by", {}).get("count", 0),
-                        "互動率": "點擊驗證",
-                        "領域": f"#{tag} 最新活動",
-                        "認證狀態": "🔗",
-                        "個人網址": f"https://www.instagram.com/p/{node.get('shortcode')}/"
+                        "平均按讚": item.get("like_count", "點擊查看"),
+                        "互動率": "實時解析中",
+                        "領域": f"#{tag} 實時熱門",
+                        "認證狀態": "✅" if user.get("is_verified") else "🔗",
+                        "個人網址": f"https://www.instagram.com/{user.get('username')}/"
                     })
-        except:
-            pass
+            else:
+                error_msg = f"API Error: {resp.status_code}"
+        except Exception as e:
+            error_msg = f"Connection Error: {str(e)}"
 
-    is_mock = not (RAPIDAPI_KEY and api_connected and results)
+    # 如果有 API 成功連線但沒結果，或連線失敗
+    is_mock = not api_connected
     
     if not results:
         results = [{"帳號": "no_results", "追蹤數": "0", "平均按讚": 0, "互動率": "0%", "領域": "無匹配", "認證狀態": "❌", "個人網址": "https://www.instagram.com/"}]
-        is_mock = True
 
     return results, is_mock
