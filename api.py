@@ -9,8 +9,7 @@ load_dotenv()
 RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")
 RAPIDAPI_HOST = os.getenv("RAPIDAPI_HOST")
 
-# --- 2024-2025 台灣網紅高品質資料庫 (經人工核對 IG Handle) ---
-# 這些名單已經過二次驗證，連結確保 100% 導向正確的本人帳號
+# --- 2024-2025 台灣網紅高品質資料庫 ---
 INFLUENCER_DB = {
     "food": [
         {"帳號": "taipeieats", "追蹤數": "6.4萬 (估)", "平均按讚": 2100, "互動率": "3.3%", "領域": "台北美食/雙語", "認證狀態": "✅", "個人網址": "https://www.instagram.com/taipeieats/"},
@@ -38,7 +37,6 @@ INFLUENCER_DB = {
     ]
 }
 
-# --- 智慧類別映射表 ---
 CATEGORY_MAPPING = {
     "food": ["美食", "吃", "餐", "甜點", "咖啡", "下午茶", "小吃", "烘焙", "酒", "cafe", "restaurant"],
     "fitness": ["健身", "運動", "重訓", "體態", "減脂", "教練", "瑜珈", "跑步", "gym", "fitness", "workout"],
@@ -53,14 +51,8 @@ def get_smart_category(keyword):
     return None
 
 def search_instagram_influencers(keyword, follower_range):
-    """
-    更新版搜尋邏輯：
-    1. 修正硬編碼資料庫中錯誤的 IG Handle 與網址。
-    2. 提供即時點擊功能以便使用者驗證最新追蹤數。
-    """
     results = []
     api_connected = False
-    error_msg = None
     
     category = get_smart_category(keyword)
     
@@ -75,11 +67,11 @@ def search_instagram_influencers(keyword, follower_range):
             except:
                 results.append(inf)
 
-    # 確保使用正確的 endpoint: search_hashtag.php
+    # 2. API 實時探測 (修正縮排錯誤)
+    if RAPIDAPI_KEY and RAPIDAPI_KEY != "your_api_key_here":
+        try:
             host = "instagram-scraper-stable-api.p.rapidapi.com"
             url = f"https://{host}/search_hashtag.php"
-            
-            # 清理關鍵字，API 只需要純文字標籤
             tag = keyword.replace("#", "").split()[0]
             
             headers = {
@@ -93,12 +85,9 @@ def search_instagram_influencers(keyword, follower_range):
             if resp.status_code == 200:
                 api_connected = True
                 data = resp.json()
-                
-                # 根據 instagram-scraper-stable-api 的回傳結構解析
-                # 假設回傳在 data['data']['items'] 或直接在 data['items']
                 items = data.get("data", {}).get("items", []) or data.get("items", [])
                 
-                for item in items[:5]: # 取前 5 筆實時資料
+                for item in items[:5]:
                     user = item.get("user", {})
                     results.append({
                         "帳號": user.get("username", "未知"),
@@ -109,12 +98,9 @@ def search_instagram_influencers(keyword, follower_range):
                         "認證狀態": "✅" if user.get("is_verified") else "🔗",
                         "個人網址": f"https://www.instagram.com/{user.get('username')}/"
                     })
-            else:
-                error_msg = f"API Error: {resp.status_code}"
         except Exception as e:
-            error_msg = f"Connection Error: {str(e)}"
+            print(f"API Connection Error: {e}")
 
-    # 如果有 API 成功連線但沒結果，或連線失敗
     is_mock = not api_connected
     
     if not results:
