@@ -5,7 +5,7 @@ from api import search_instagram_influencers
 
 # --- 頁面配置 ---
 st.set_page_config(
-    page_title="Influencer Pro - 台灣網紅精選媒合",
+    page_title="Influencer Pro - 台灣網紅 & KOC 媒合",
     page_icon="💎",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -27,6 +27,7 @@ st.markdown("""
     .stat-label { font-size: 0.85rem; color: #64748b; }
     .verified-badge { color: #3b82f6; margin-left: 5px; font-size: 1.1rem; }
     .tag-label { background-color: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+    .koc-badge { background-color: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-left: 10px; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -35,49 +36,60 @@ with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/174/174855.png", width=60)
     st.title("專業篩選器")
     st.markdown("---")
-    keyword = st.text_input("🎯 搜尋領域或關鍵字", placeholder="例如: 台北美食, 健身, 穿搭...")
+    keyword = st.text_input("🎯 搜尋領域", placeholder="美食, 健身, 旅遊...")
     
-    st.info("💡 提示：輸入「美食」、「運動」、「旅遊」或「美妝」可獲得最佳匹配。")
+    follower_range = st.slider(
+        "👥 粉絲人數區間",
+        0, 500000, (0, 100000),
+        step=10000,
+        help="拉動滑桿可過濾大網紅或小 KOC"
+    )
     
-    search_button = st.button("🔍 執行精選媒合", type="primary", use_container_width=True)
+    search_button = st.button("🔍 執行媒合搜尋", type="primary", use_container_width=True)
     
     st.markdown("---")
-    st.caption("Influencer Pro v3.0 Official")
-    st.caption("系統狀態：🟢 已連線至精選資料庫")
+    st.caption("Influencer Pro v3.1 (KOC Enabled)")
+    st.caption("系統狀態：🟢 穩定連線中")
 
 # --- 主標題區 ---
-st.title("💎 Influencer Pro 台灣網紅精選")
-st.markdown("#### 匯集全台最優質、高互動率的創作者名單")
+st.title("💎 Influencer Pro 網紅 & KOC 媒合")
+st.markdown("#### 找大網紅做品牌，找小 KOC 做導購")
 
 # --- 搜尋邏輯 ---
 if search_button:
     if not keyword:
         st.error("請輸入關鍵字以開始搜尋！")
     else:
-        with st.spinner('正在分析匹配網紅...'):
-            results, _, diag_msg = search_instagram_influencers(keyword, (0, 1000000))
-            time.sleep(0.6)
+        with st.spinner('正在篩選合適人選...'):
+            results, _, _ = search_instagram_influencers(keyword, follower_range)
+            time.sleep(0.5)
         
-        st.success(f"為您找到 {len(results)} 位「{keyword}」領域的推薦創作者")
+        st.success(f"已根據您的條件篩選出 {len(results)} 位創作者")
         
         # --- 展示區 ---
         cols = st.columns(2)
         for idx, inf in enumerate(results):
+            if inf['帳號'] == "🔍 建議調整人數範圍":
+                st.warning("在此人數區間內未找到匹配人選，請調整人數滑桿再試一次。")
+                break
+                
             with cols[idx % 2]:
                 v_badge = " <span class='verified-badge'>✅</span>" if inf.get("認證狀態") == "✅" else ""
+                koc_label = " <span class='koc-badge'>KOC 特選</span>" if inf['追蹤數'] < 100000 else ""
+                
                 st.markdown(f"""
                     <div class="influencer-card">
                         <div style="display: flex; align-items: center; margin-bottom: 20px;">
-                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                                 {inf['帳號'][0].upper()}
                             </div>
                             <div style="margin-left: 20px;">
                                 <h3 style="margin: 0; padding: 0; color: #0f172a;">@{inf['帳號']}{v_badge}</h3>
-                                <span class="tag-label">{inf['領域']}</span>
+                                <span class="tag-label">{inf['領域']}</span>{koc_label}
                             </div>
                         </div>
                         <div style="display: flex; justify-content: space-between; gap: 15px; margin-bottom: 20px;">
-                            <div class="stat-box" style="flex: 1;"><div class="stat-value">{inf['追蹤數']}</div><div class="stat-label">追蹤人數</div></div>
+                            <div class="stat-box" style="flex: 1;"><div class="stat-value">{inf['追蹤數_顯示']}</div><div class="stat-label">追蹤人數</div></div>
                             <div class="stat-box" style="flex: 1;"><div class="stat-value">{inf['平均按讚']}</div><div class="stat-label">平均讚數</div></div>
                             <div class="stat-box" style="flex: 1;"><div class="stat-value">{inf['互動率']}</div><div class="stat-label">互動率</div></div>
                         </div>
@@ -90,22 +102,8 @@ if search_button:
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
-        
-        # --- 下載功能 ---
-        st.markdown("---")
-        csv = pd.DataFrame(results).to_csv(index=False).encode('utf-8-sig')
-        st.download_button("📥 匯出媒合清單 (CSV)", csv, f"influencer_export_{keyword}.csv", "text/csv", use_container_width=True)
-
 else:
-    # 歡迎畫面
-    st.info("👋 歡迎使用 Influencer Pro！我們已為您預篩選出台灣最頂尖的網紅名單，請在左側開始搜尋。")
-    
-    st.write("### 🚀 快速瀏覽分類")
-    tcols = st.columns(4)
-    with tcols[0]: st.button("🍴 美食料理", on_click=lambda: None, use_container_width=True)
-    with tcols[1]: st.button("🏋️ 健身運動", on_click=lambda: None, use_container_width=True)
-    with tcols[2]: st.button("✈️ 旅遊景點", on_click=lambda: None, use_container_width=True)
-    with tcols[3]: st.button("💄 美妝保養", on_click=lambda: None, use_container_width=True)
+    st.info("👋 歡迎！請在左側調整「粉絲人數區間」來尋找大網紅或精準 KOC。")
 
 st.divider()
-st.caption("© 2025 Influencer Pro Taiwan. 數據最後更新日期：2025/05/20")
+st.caption("© 2025 Influencer Pro Taiwan. v3.1 Premium")
