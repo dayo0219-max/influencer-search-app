@@ -3,23 +3,18 @@ import requests
 import time
 from dotenv import load_dotenv
 
-# 加載環境變數 (本地開發用)
 load_dotenv()
 
 def get_api_config():
-    """優先從環境變數讀取，如果沒有則嘗試 Streamlit Secrets"""
     key = os.getenv("RAPIDAPI_KEY")
-    host = os.getenv("RAPIDAPI_HOST")
-    
-    # 如果環境變數是空的，嘗試從 Streamlit 特有的方式讀取 (有些環境下 os.getenv 抓不到 Secrets)
+    # 如果環境變數是空的，嘗試從 Streamlit Secrets 讀取
     if not key:
         try:
             import streamlit as st
             key = st.secrets.get("RAPIDAPI_KEY")
-            host = st.secrets.get("RAPIDAPI_HOST")
         except:
             pass
-    return key, host
+    return key
 
 # --- 2024-2025 台灣網紅高品質資料庫 ---
 INFLUENCER_DB = {
@@ -49,30 +44,40 @@ INFLUENCER_DB = {
     ]
 }
 
-CATEGORY_MAPPING = {
-    "food": ["美食", "吃", "餐", "甜點", "咖啡", "下午茶", "小吃", "烘焙", "酒", "cafe", "restaurant"],
-    "fitness": ["健身", "運動", "重訓", "體態", "減脂", "教練", "瑜珈", "跑步", "gym", "fitness", "workout"],
-    "travel": ["旅遊", "旅行", "親子", "育兒", "飯店", "露營", "景點", "出國", "玩", "travel", "family"]
-}
-
 def get_smart_category(keyword):
     kw = keyword.lower()
-    for cat, aliases in CATEGORY_MAPPING.items():
+    mapping = {
+        "food": ["美食", "吃", "餐", "甜點", "咖啡", "下午茶", "小吃", "烘焙", "酒", "cafe", "restaurant"],
+        "fitness": ["健身", "運動", "重訓", "體態", "減脂", "教練", "瑜珈", "跑步", "gym", "fitness", "workout"],
+        "travel": ["旅遊", "旅行", "親子", "育兒", "飯店", "露營", "景點", "出國", "玩", "travel", "family"]
+    }
+    for cat, aliases in mapping.items():
         if any(alias in kw for alias in aliases):
             return cat
     return None
 
+def try_api_request(api_host, api_key, tag):
+    """通用 API 請求函式"""
+    url = f"https://{api_host}/search_hashtag.php"
+    headers = {"x-rapidapi-key": api_key, "x-rapidapi-host": api_host}
+    params = {"hashtag": tag}
+    try:
+        resp = requests.get(url, headers=headers, params=params, timeout=10)
+        if resp.status_code == 200:
+            return resp.json(), None
+        return None, f"HTTP {resp.status_code}"
+    except Exception as e:
+        return None, str(e)
+
 def search_instagram_influencers(keyword, follower_range):
     results = []
     api_connected = False
-    api_error = None
+    api_error = "None"
     
-    # 獲取最新金鑰設定
-    rapid_key, rapid_host = get_api_config()
-    
+    rapid_key = get_api_config()
     category = get_smart_category(keyword)
     
-    # 1. 先從本地高品質資料庫搜尋
+    # 1. 本地資料庫
     if category and category in INFLUENCER_DB:
         for inf in INFLUENCER_DB[category]:
             raw_count = inf["追蹤數"].replace("萬 (估)", "")
@@ -83,48 +88,37 @@ def search_instagram_influencers(keyword, follower_range):
             except:
                 results.append(inf)
 
-    # 2. API 實時探測
+    # 2. 多重 API 輪詢嘗試
     if rapid_key and "your_api_key" not in rapid_key:
-        try:
-            # 強制校正 Host
-            actual_host = "instagram-scraper-stable-api.p.rapidapi.com"
-            url = f"https://{actual_host}/search_hashtag.php"
-            tag = keyword.replace("#", "").split()[0]
-            
-            headers = {
-                "x-rapidapi-key": rapid_key,
-                "x-rapidapi-host": actual_host
-            }
-            params = {"hashtag": tag}
-            
-            resp = requests.get(url, headers=headers, params=params, timeout=15)
-            
-            if resp.status_code == 200:
+        tag = keyword.replace("#", "").split()[0]
+        
+        # 嘗試清單：原本的 API 和一個潛在的備份 Host
+        hosts = [
+            "instagram-scraper-stable-api.p.rapidapi.com",
+            "social-links-search.p.rapidapi.com"
+        ]
+        
+        for host in hosts:
+            data, err = try_api_request(host, rapid_key, tag)
+            if data:
                 api_connected = True
-                data = resp.json()
                 items = data.get("data", {}).get("items", []) or data.get("items", [])
-                
                 for item in items[:5]:
                     user = item.get("user", {})
                     results.append({
                         "帳號": user.get("username", "未知"),
                         "追蹤數": "實時動態", 
                         "平均按讚": item.get("like_count", "點擊查看"),
-                        "互動率": "實時解析中",
-                        "領域": f"#{tag} 實時熱門",
+                        "互動率": "實時解析",
+                        "領域": f"#{tag} 實時",
                         "認證狀態": "✅" if user.get("is_verified") else "🔗",
                         "個人網址": f"https://www.instagram.com/{user.get('username')}/"
                     })
+                break # 成功抓到就跳出迴圈
             else:
-                api_error = f"API 錯誤碼: {resp.status_code} ({resp.text[:50]}...)"
-        except Exception as e:
-            api_error = f"連線異常: {str(e)}"
-    else:
-        api_error = "找不到有效的 RAPIDAPI_KEY，請檢查 Secrets 設定。"
+                api_error = err
 
-    # 如果 API 沒成功，標記為 mock 模式
     is_mock = not api_connected
-    
     if not results:
         results = [{"帳號": "no_results", "追蹤數": "0", "平均按讚": 0, "互動率": "0%", "領域": "無匹配", "認證狀態": "❌", "個人網址": "https://www.instagram.com/"}]
 
