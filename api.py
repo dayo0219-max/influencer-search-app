@@ -75,11 +75,8 @@ def search_instagram_influencers(keyword, follower_range):
             except:
                 results.append(inf)
 
-    # 2. API 實時探測 (修正 URL 與 Host 匹配邏輯)
-    if RAPIDAPI_KEY and RAPIDAPI_KEY != "your_api_key_here":
-        try:
-            # 確保使用正確的 endpoint: search_hashtag.php
-            host = RAPIDAPI_HOST if RAPIDAPI_HOST else "instagram-scraper-stable-api.p.rapidapi.com"
+    # 確保使用正確的 endpoint: search_hashtag.php
+            host = "instagram-scraper-stable-api.p.rapidapi.com"
             url = f"https://{host}/search_hashtag.php"
             
             # 清理關鍵字，API 只需要純文字標籤
