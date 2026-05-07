@@ -7,7 +7,6 @@ load_dotenv()
 
 def get_api_config():
     key = os.getenv("RAPIDAPI_KEY")
-    # 如果環境變數是空的，嘗試從 Streamlit Secrets 讀取
     if not key:
         try:
             import streamlit as st
@@ -56,19 +55,6 @@ def get_smart_category(keyword):
             return cat
     return None
 
-def try_api_request(api_host, api_key, tag):
-    """通用 API 請求函式"""
-    url = f"https://{api_host}/search_hashtag.php"
-    headers = {"x-rapidapi-key": api_key, "x-rapidapi-host": api_host}
-    params = {"hashtag": tag}
-    try:
-        resp = requests.get(url, headers=headers, params=params, timeout=10)
-        if resp.status_code == 200:
-            return resp.json(), None
-        return None, f"HTTP {resp.status_code}"
-    except Exception as e:
-        return None, str(e)
-
 def search_instagram_influencers(keyword, follower_range):
     results = []
     api_connected = False
@@ -88,35 +74,46 @@ def search_instagram_influencers(keyword, follower_range):
             except:
                 results.append(inf)
 
-    # 2. 多重 API 輪詢嘗試
+    # 2. 切換至新 API: instagram191
     if rapid_key and "your_api_key" not in rapid_key:
-        tag = keyword.replace("#", "").split()[0]
-        
-        # 嘗試清單：原本的 API 和一個潛在的備份 Host
-        hosts = [
-            "instagram-scraper-stable-api.p.rapidapi.com",
-            "social-links-search.p.rapidapi.com"
-        ]
-        
-        for host in hosts:
-            data, err = try_api_request(host, rapid_key, tag)
-            if data:
+        try:
+            host = "instagram191.p.rapidapi.com"
+            url = "https://instagram191.p.rapidapi.com/v1/hashtag/media/" # 使用 V1 標籤媒體介面
+            tag = keyword.replace("#", "").split()[0]
+            
+            headers = {
+                "x-rapidapi-key": rapid_key,
+                "x-rapidapi-host": host
+            }
+            params = {"hashtag_name": tag}
+            
+            resp = requests.get(url, headers=headers, params=params, timeout=15)
+            
+            if resp.status_code == 200:
                 api_connected = True
-                items = data.get("data", {}).get("items", []) or data.get("items", [])
-                for item in items[:5]:
+                data = resp.json()
+                
+                # instagram191 V1 回傳結構通常在 'items'
+                items = data.get("items", [])
+                
+                for item in items[:8]: # 增加到 8 位網紅
                     user = item.get("user", {})
-                    results.append({
-                        "帳號": user.get("username", "未知"),
-                        "追蹤數": "實時動態", 
-                        "平均按讚": item.get("like_count", "點擊查看"),
-                        "互動率": "實時解析",
-                        "領域": f"#{tag} 實時",
-                        "認證狀態": "✅" if user.get("is_verified") else "🔗",
-                        "個人網址": f"https://www.instagram.com/{user.get('username')}/"
-                    })
-                break # 成功抓到就跳出迴圈
+                    if user:
+                        results.append({
+                            "帳號": user.get("username", "未知"),
+                            "追蹤數": "實時動態", 
+                            "平均按讚": item.get("like_count", "點擊查看"),
+                            "互動率": "實時解析中",
+                            "領域": f"#{tag} 實時趨勢",
+                            "認證狀態": "✅" if user.get("is_verified") else "🔗",
+                            "個人網址": f"https://www.instagram.com/{user.get('username')}/"
+                        })
             else:
-                api_error = err
+                api_error = f"API 錯誤: {resp.status_code} (請確認是否已訂閱 instagram191)"
+        except Exception as e:
+            api_error = f"連線異常: {str(e)}"
+    else:
+        api_error = "金鑰未設定"
 
     is_mock = not api_connected
     if not results:
