@@ -18,7 +18,12 @@ def search_instagram_influencers(keyword, follower_range):
         niche_map = {
             "美食": "food", "旅遊": "travel", "科技": "tech", "開箱": "tech",
             "美妝": "beauty", "健身": "fitness", "育兒": "parenting", "親子": "parenting",
-            "寵物": "pet", "財經": "finance"
+            "寵物": "pet", "財經": "finance",
+            "生活風格": "lifestyle", "日常": "lifestyle", "vlog": "lifestyle",
+            "攝影": "photography", "人像": "photography", "風景": "photography",
+            "電競遊戲": "gaming", "遊戲": "gaming", "實況": "gaming",
+            "知識": "education", "學習": "education", "職涯": "education",
+            "居家": "home", "裝潢": "home", "家居": "home"
         }
         
         target_niche = niche_map.get(keyword, None)
