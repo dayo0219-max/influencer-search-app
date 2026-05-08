@@ -5,43 +5,41 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database.csv")
 
 def search_instagram_influencers(keyword, follower_range):
-    """
-    穩健版：使用英文欄位名稱，避免亂碼衝突，支援模糊搜尋
-    """
     try:
-        # 強制指定編碼讀取
         df = pd.read_csv(DB_PATH, encoding='utf-8-sig')
         
-        # 英文標籤映射表
-        cat_map = {
-            "美食": "food", "food": "food",
-            "旅遊": "travel", "travel": "travel",
-            "健身": "fitness", "fitness": "fitness",
-            "3c": "tech", "科技": "tech", "tech": "tech",
-            "美妝": "beauty", "beauty": "beauty",
-            "育兒": "parenting", "親子": "parenting",
-            "寵物": "pet", "pet": "pet",
-            "財經": "finance", "理財": "finance"
+        # 1. 嚴格檢查關鍵字
+        if not keyword or keyword.strip() == "":
+            return [], False, "請輸入關鍵字以進行搜尋"
+
+        keyword = keyword.strip().lower()
+        
+        # 2. 建立標籤映射 (讓搜尋親子、旅遊能對應到正確 niche)
+        niche_map = {
+            "美食": "food", "旅遊": "travel", "科技": "tech", "開箱": "tech",
+            "美妝": "beauty", "健身": "fitness", "育兒": "parenting", "親子": "parenting",
+            "寵物": "pet", "財經": "finance"
         }
         
-        target_niche = cat_map.get(keyword.lower(), None)
+        target_niche = niche_map.get(keyword, None)
         
-        # 模糊搜尋邏輯：帳號、領域、足跡任一匹配即可
+        # 3. 執行過濾
         if target_niche:
+            # 如果是預設類別，採精準匹配
             mask = (df['niche'] == target_niche)
         else:
-            # 全文模糊匹配
+            # 如果是自定義詞，採模糊匹配，但確保不是全選
             mask = (df['username'].str.contains(keyword, case=False, na=False)) | \
                    (df['niche'].str.contains(keyword, case=False, na=False)) | \
                    (df['footprint'].str.contains(keyword, case=False, na=False))
         
         filtered_df = df[mask]
         
-        # 追蹤人數過濾
+        # 4. 追蹤人數過濾
         min_f, max_f = follower_range
         final_df = filtered_df[(filtered_df['followers'] >= min_f) & (filtered_df['followers'] <= max_f)]
         
-        # 格式化輸出
+        # 5. 格式化輸出
         results = []
         for _, row in final_df.iterrows():
             foll = row['followers']
@@ -60,4 +58,4 @@ def search_instagram_influencers(keyword, follower_range):
         
         return results, False, f"找到 {len(results)} 位人選"
     except Exception as e:
-        return [], False, f"搜尋系統異常: {str(e)}"
+        return [], False, f"系統錯誤: {str(e)}"
