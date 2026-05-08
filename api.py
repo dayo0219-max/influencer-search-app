@@ -1,59 +1,63 @@
 import pandas as pd
 import os
 
-# 取得目前檔案路徑
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database.csv")
 
-def get_smart_category(keyword):
-    kw = keyword.lower()
-    mapping = {
-        "food": ["美食", "吃", "餐", "甜點", "咖啡", "台北", "餐廳", "koc", "小網紅"],
-        "fitness": ["健身", "運動", "重訓", "體態", "教練", "瑜珈", "koc"],
-        "travel": ["旅遊", "旅行", "親子", "飯店", "景點", "出國", "koc"],
-        "tech": ["3c", "手機", "電腦", "開箱", "科技", "評測", "相機", "apple"],
-        "beauty": ["美妝", "穿搭", "保養", "時尚", "化妝", "beauty"]
-    }
-    for cat, aliases in mapping.items():
-        if any(alias in kw for alias in aliases): return cat
-    return None
-
 def search_instagram_influencers(keyword, follower_range):
     """
-    大數據版：從 CSV 讀取並過濾上千筆資料
+    穩健版：使用英文欄位名稱，避免亂碼衝突，支援模糊搜尋
     """
     try:
-        # 讀取資料庫
-        df = pd.read_csv(DB_PATH)
+        # 強制指定編碼讀取
+        df = pd.read_csv(DB_PATH, encoding='utf-8-sig')
         
-        # 轉換數值型態確保過濾正確
-        df['追蹤數'] = pd.to_numeric(df['追蹤數'], errors='coerce')
+        # 英文標籤映射表
+        cat_map = {
+            "美食": "food", "food": "food",
+            "旅遊": "travel", "travel": "travel",
+            "健身": "fitness", "fitness": "fitness",
+            "3c": "tech", "科技": "tech", "tech": "tech",
+            "美妝": "beauty", "beauty": "beauty",
+            "育兒": "parenting", "親子": "parenting",
+            "寵物": "pet", "pet": "pet",
+            "財經": "finance", "理財": "finance"
+        }
         
-        # 關鍵字過濾
-        category = get_smart_category(keyword)
-        if category:
-            mask = (df['領域'] == category)
+        target_niche = cat_map.get(keyword.lower(), None)
+        
+        # 模糊搜尋邏輯：帳號、領域、足跡任一匹配即可
+        if target_niche:
+            mask = (df['niche'] == target_niche)
         else:
-            mask = df['帳號'].str.contains(keyword, case=False, na=False) | \
-                   df['領域'].str.contains(keyword, case=False, na=False)
+            # 全文模糊匹配
+            mask = (df['username'].str.contains(keyword, case=False, na=False)) | \
+                   (df['niche'].str.contains(keyword, case=False, na=False)) | \
+                   (df['footprint'].str.contains(keyword, case=False, na=False))
         
         filtered_df = df[mask]
         
-        # 人數區間過濾
+        # 追蹤人數過濾
         min_f, max_f = follower_range
-        final_df = filtered_df[(filtered_df['追蹤數'] >= min_f) & (filtered_df['追蹤數'] <= max_f)]
+        final_df = filtered_df[(filtered_df['followers'] >= min_f) & (filtered_df['followers'] <= max_f)]
         
-        # 轉換回列表格式供介面顯示
-        results = final_df.to_dict('records')
+        # 格式化輸出
+        results = []
+        for _, row in final_df.iterrows():
+            foll = row['followers']
+            results.append({
+                "帳號": row['username'],
+                "追蹤數": int(foll),
+                "追蹤數_顯示": f"{foll/10000:.1f}萬" if foll >= 10000 else f"{int(foll)}",
+                "平均按讚": row['likes'],
+                "互動率": row['engagement'],
+                "領域": row['niche'],
+                "認證狀態": row['verified'],
+                "品牌足跡": row['footprint'],
+                "安全評估": row['safety'],
+                "個人網址": row['url']
+            })
         
-        # 格式化顯示用的數字 (例如 152000 -> 15.2萬)
-        for res in results:
-            count = res['追蹤數']
-            if count >= 10000:
-                res['追蹤數_顯示'] = f"{count/10000:.1f}萬"
-            else:
-                res['追蹤數_顯示'] = f"{count:,}"
-        
-        return results, False, f"已從資料庫載入 {len(results)} 筆結果"
+        return results, False, f"找到 {len(results)} 位人選"
     except Exception as e:
-        return [], False, f"資料庫讀取失敗: {str(e)}"
+        return [], False, f"搜尋系統異常: {str(e)}"
