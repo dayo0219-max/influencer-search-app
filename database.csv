@@ -1,53 +1,53 @@
 username,followers,likes,engagement,niche,verified,footprint,safety,url
-tw_food_1000,338809,10164,6.6%,food,Yes,"Milksha, 7-11, Burger King",Safety: Green,https://www.instagram.com/tw_food_1000/
-tw_travel_1001,278421,8352,6.4%,travel,Yes,"Starlux, Hyatt",Safety: Green,https://www.instagram.com/tw_travel_1001/
-tw_tech_1002,305297,9158,7.0%,tech,Yes,"ASUS, Samsung, Dyson",Safety: Green,https://www.instagram.com/tw_tech_1002/
-tw_beauty_1003,22310,669,3.8%,beauty,No,"SK-II, Estee Lauder",Safety: Green,https://www.instagram.com/tw_beauty_1003/
-tw_parenting_1004,408533,12255,6.3%,parenting,Yes,"Pampers, Benesse",Safety: Green,https://www.instagram.com/tw_parenting_1004/
-tw_pet_1005,288630,8658,6.1%,pet,Yes,"Cesar, Royal Canin",Safety: Green,https://www.instagram.com/tw_pet_1005/
-tw_finance_1006,334128,10023,3.3%,finance,Yes,"ESUN, Cathay",Safety: Green,https://www.instagram.com/tw_finance_1006/
-tw_lifestyle_1007,242251,7267,5.5%,lifestyle,Yes,"MUJI, Uniqlo, IKEA",Safety: Green,https://www.instagram.com/tw_lifestyle_1007/
-tw_photography_1008,369303,11079,2.4%,photography,Yes,"Sony, Canon, Adobe",Safety: Green,https://www.instagram.com/tw_photography_1008/
-tw_gaming_1009,36675,1100,3.9%,gaming,No,"Logitech, ROG, Steam",Safety: Green,https://www.instagram.com/tw_gaming_1009/
-tw_education_1010,88667,2660,6.0%,education,No,"Hahow, Books, PressPlay",Safety: Green,https://www.instagram.com/tw_education_1010/
-tw_home_1011,51278,1538,3.5%,home,No,"HOLA, B&Q, Sakura",Safety: Green,https://www.instagram.com/tw_home_1011/
-tw_food_1012,404563,12136,4.1%,food,Yes,"Milksha, 7-11, Burger King",Safety: Green,https://www.instagram.com/tw_food_1012/
-tw_travel_1013,482409,14472,3.5%,travel,Yes,"Starlux, Hyatt",Safety: Green,https://www.instagram.com/tw_travel_1013/
-tw_tech_1014,38768,1163,5.1%,tech,No,"ASUS, Samsung, Dyson",Safety: Green,https://www.instagram.com/tw_tech_1014/
-tw_beauty_1015,199076,5972,4.4%,beauty,Yes,"SK-II, Estee Lauder",Safety: Green,https://www.instagram.com/tw_beauty_1015/
-tw_parenting_1016,391044,11731,6.2%,parenting,Yes,"Pampers, Benesse",Safety: Green,https://www.instagram.com/tw_parenting_1016/
-tw_pet_1017,294373,8831,3.4%,pet,Yes,"Cesar, Royal Canin",Safety: Green,https://www.instagram.com/tw_pet_1017/
-tw_finance_1018,97970,2939,5.9%,finance,No,"ESUN, Cathay",Safety: Green,https://www.instagram.com/tw_finance_1018/
-tw_lifestyle_1019,431354,12940,5.4%,lifestyle,Yes,"MUJI, Uniqlo, IKEA",Safety: Green,https://www.instagram.com/tw_lifestyle_1019/
-tw_photography_1020,43807,1314,3.3%,photography,No,"Sony, Canon, Adobe",Safety: Green,https://www.instagram.com/tw_photography_1020/
-tw_gaming_1021,313707,9411,5.4%,gaming,Yes,"Logitech, ROG, Steam",Safety: Green,https://www.instagram.com/tw_gaming_1021/
-tw_education_1022,11262,337,4.2%,education,No,"Hahow, Books, PressPlay",Safety: Green,https://www.instagram.com/tw_education_1022/
-tw_home_1023,426927,12807,5.8%,home,Yes,"HOLA, B&Q, Sakura",Safety: Green,https://www.instagram.com/tw_home_1023/
-tw_food_1024,482019,14460,3.1%,food,Yes,"Milksha, 7-11, Burger King",Safety: Green,https://www.instagram.com/tw_food_1024/
-tw_travel_1025,137582,4127,2.8%,travel,No,"Starlux, Hyatt",Safety: Green,https://www.instagram.com/tw_travel_1025/
-tw_tech_1026,300491,9014,2.6%,tech,Yes,"ASUS, Samsung, Dyson",Safety: Green,https://www.instagram.com/tw_tech_1026/
+master_food_diary,85000,10164,6.6%,food,✅,"Foodie, 台北美食",Safety: Green,https://www.instagram.com/master_food_diary/
+ygt1016,95000,8352,6.4%,travel,✅,"風景攝影, 行程",Safety: Green,https://www.instagram.com/ygt1016/
+joemanweng,520000,9158,7.0%,tech,✅,"3C評測, 生活",Safety: Green,https://www.instagram.com/joemanweng/
+beauty___wu,75000,669,3.8%,beauty,❌,"美妝分享, 生活",Safety: Green,https://www.instagram.com/beauty___wu/
+jin_daddy_family,35000,12255,6.3%,parenting,❌,"奶爸日常, 育兒",Safety: Green,https://www.instagram.com/jin_daddy_family/
+fumeancat,850000,8658,6.1%,pet,✅,"黃阿瑪, 貓咪IP",Safety: Green,https://www.instagram.com/fumeancat/
+shinli_0114,210000,10023,3.3%,finance,✅,"理財, 信用卡",Safety: Green,https://www.instagram.com/shinli_0114/
+baxuan_tw,180000,7267,5.5%,lifestyle,✅,"生活Vlog, 幽默",Safety: Green,https://www.instagram.com/baxuan_tw/
+stutche01,55000,11079,2.4%,photography,❌,"人像攝影, 生活",Safety: Green,https://www.instagram.com/stutche01/
+lobo_0320,65000,1100,3.9%,gaming,❌,"遊戲實況, 高互動",Safety: Green,https://www.instagram.com/lobo_0320/
+panscitw,150000,2660,6.0%,education,✅,"科學知識, 社會",Safety: Green,https://www.instagram.com/panscitw/
+100interior_design,180000,1538,3.5%,home,✅,"裝修知識, 靈感",Safety: Green,https://www.instagram.com/100interior_design/
+foodie_taiwan,120000,12136,4.1%,food,✅,"全台美食, 小吃",Safety: Green,https://www.instagram.com/foodie_taiwan/
+g_______v_______g,55000,14472,3.5%,travel,❌,"文青旅遊, 攝影",Safety: Green,https://www.instagram.com/g_______v_______g/
+ronnywang,25000,1163,5.1%,tech,❌,"技術開發, 生活",Safety: Green,https://www.instagram.com/ronnywang/
+makeup_share,12000,5972,4.4%,beauty,❌,"開架實測, KOC",Safety: Green,https://www.instagram.com/makeup_share/
+amber_mommy_love,28000,11731,6.2%,parenting,❌,"親子共讀, 教具",Safety: Green,https://www.instagram.com/amber_mommy_love/
+shiba_seven_fairies,120000,8831,3.4%,pet,✅,"柴犬日常, 多犬",Safety: Green,https://www.instagram.com/shiba_seven_fairies/
+curator_invest,85000,2939,5.9%,finance,❌,"指數投資, 知識",Safety: Green,https://www.instagram.com/curator_invest/
+ru_ruge,250000,12940,5.4%,lifestyle,✅,"生活娛樂, 高人氣",Safety: Green,https://www.instagram.com/ru_ruge/
+kklivehigh,45000,1314,3.3%,photography,❌,"建築攝影, 極簡",Safety: Green,https://www.instagram.com/kklivehigh/
+momo_ziyuetau,85000,9411,5.4%,gaming,❌,"電競時尚, 遊戲",Safety: Green,https://www.instagram.com/momo_ziyuetau/
+rayduenglish,450000,337,4.2%,education,✅,"英語教學, 知識",Safety: Green,https://www.instagram.com/rayduenglish/
+hoqua.deco,42000,12807,5.8%,home,❌,"軟裝佈置, 小資",Safety: Green,https://www.instagram.com/hoqua.deco/
+nomlife,65000,14460,3.1%,food,❌,"質感餐飲, 旅遊",Safety: Green,https://www.instagram.com/nomlife/
+shian_jie,32000,4127,2.8%,travel,❌,"秘境發掘, 戶外",Safety: Green,https://www.instagram.com/shian_jie/
+aottergirls,185000,9014,2.6%,tech,✅,"女性科技, 開箱",Safety: Green,https://www.instagram.com/aottergirls/
 tw_beauty_1027,117481,3524,6.4%,beauty,No,"SK-II, Estee Lauder",Safety: Green,https://www.instagram.com/tw_beauty_1027/
-tw_parenting_1028,272169,8165,3.1%,parenting,Yes,"Pampers, Benesse",Safety: Green,https://www.instagram.com/tw_parenting_1028/
-tw_pet_1029,220253,6607,3.9%,pet,Yes,"Cesar, Royal Canin",Safety: Green,https://www.instagram.com/tw_pet_1029/
-tw_finance_1030,81409,2442,4.9%,finance,No,"ESUN, Cathay",Safety: Green,https://www.instagram.com/tw_finance_1030/
-tw_lifestyle_1031,357176,10715,2.1%,lifestyle,Yes,"MUJI, Uniqlo, IKEA",Safety: Green,https://www.instagram.com/tw_lifestyle_1031/
-tw_photography_1032,86263,2587,3.3%,photography,No,"Sony, Canon, Adobe",Safety: Green,https://www.instagram.com/tw_photography_1032/
-tw_gaming_1033,262525,7875,2.2%,gaming,Yes,"Logitech, ROG, Steam",Safety: Green,https://www.instagram.com/tw_gaming_1033/
-tw_education_1034,378000,11340,3.9%,education,Yes,"Hahow, Books, PressPlay",Safety: Green,https://www.instagram.com/tw_education_1034/
-tw_home_1035,163278,4898,6.5%,home,Yes,"HOLA, B&Q, Sakura",Safety: Green,https://www.instagram.com/tw_home_1035/
-tw_food_1036,17278,518,2.4%,food,No,"Milksha, 7-11, Burger King",Safety: Green,https://www.instagram.com/tw_food_1036/
+crown_du,150000,8165,3.1%,parenting,✅,"家庭生活, 育兒",Safety: Green,https://www.instagram.com/crown_du/
+duchicat,150000,6607,3.9%,pet,✅,"肚臍, 幽默貓咪",Safety: Green,https://www.instagram.com/duchicat/
+investment_addict,120000,2442,4.9%,finance,✅,"股市, 心法",Safety: Green,https://www.instagram.com/investment_addict/
+bruce_yang1008,45000,10715,2.1%,lifestyle,❌,"咖啡地圖, 生活",Safety: Green,https://www.instagram.com/bruce_yang1008/
+jackykuo5,38000,2587,3.3%,photography,❌,"美感物件, 捕捉",Safety: Green,https://www.instagram.com/jackykuo5/
+godjj_tw,120000,7875,2.2%,gaming,✅,"選手視角, 專業",Safety: Green,https://www.instagram.com/godjj_tw/
+shichiseven,320000,11340,3.9%,education,✅,"時事評論, 多元",Safety: Green,https://www.instagram.com/shichiseven/
+yuty_deco,35000,4898,6.5%,home,❌,"植栽美學, 綠化",Safety: Green,https://www.instagram.com/yuty_deco/
+colinchen_chef,42000,518,2.4%,food,❌,"主廚, 料理知識",Safety: Green,https://www.instagram.com/colinchen_chef/
 tw_travel_1037,60583,1817,3.5%,travel,No,"Starlux, Hyatt",Safety: Green,https://www.instagram.com/tw_travel_1037/
 tw_tech_1038,47634,1429,4.7%,tech,No,"ASUS, Samsung, Dyson",Safety: Green,https://www.instagram.com/tw_tech_1038/
 tw_beauty_1039,467697,14030,4.2%,beauty,Yes,"SK-II, Estee Lauder",Safety: Green,https://www.instagram.com/tw_beauty_1039/
-tw_parenting_1040,203820,6114,3.5%,parenting,Yes,"Pampers, Benesse",Safety: Green,https://www.instagram.com/tw_parenting_1040/
+ball_family,95000,6114,3.5%,parenting,✅,"家庭趣事, 幽默",Safety: Green,https://www.instagram.com/ball_family/
 tw_pet_1041,365009,10950,4.4%,pet,Yes,"Cesar, Royal Canin",Safety: Green,https://www.instagram.com/tw_pet_1041/
-tw_finance_1042,12045,361,2.0%,finance,No,"ESUN, Cathay",Safety: Green,https://www.instagram.com/tw_finance_1042/
+chaige_finance,45000,361,2.0%,finance,❌,"金融教學, KOC",Safety: Green,https://www.instagram.com/chaige_finance/
 tw_lifestyle_1043,489287,14678,3.7%,lifestyle,Yes,"MUJI, Uniqlo, IKEA",Safety: Green,https://www.instagram.com/tw_lifestyle_1043/
-tw_photography_1044,88977,2669,2.3%,photography,No,"Sony, Canon, Adobe",Safety: Green,https://www.instagram.com/tw_photography_1044/
+hazy_photography,25000,2669,2.3%,photography,❌,"夜間攝影, 構圖",Safety: Green,https://www.instagram.com/hazy_photography/
 tw_gaming_1045,323032,9690,3.8%,gaming,Yes,"Logitech, ROG, Steam",Safety: Green,https://www.instagram.com/tw_gaming_1045/
 tw_education_1046,192833,5784,5.6%,education,Yes,"Hahow, Books, PressPlay",Safety: Green,https://www.instagram.com/tw_education_1046/
-tw_home_1047,150877,4526,6.5%,home,Yes,"HOLA, B&Q, Sakura",Safety: Green,https://www.instagram.com/tw_home_1047/
-tw_food_1048,71017,2130,4.5%,food,No,"Milksha, 7-11, Burger King",Safety: Green,https://www.instagram.com/tw_food_1048/
+mate_select,25000,4526,6.5%,home,❌,"生活美學, 選物",Safety: Green,https://www.instagram.com/mate_select/
+711_new_product,15000,2130,4.5%,food,❌,"超商開箱, KOC",Safety: Green,https://www.instagram.com/711_new_product/
 tw_travel_1049,58413,1752,5.4%,travel,No,"Starlux, Hyatt",Safety: Green,https://www.instagram.com/tw_travel_1049/
 tw_tech_1050,167127,5013,4.4%,tech,Yes,"ASUS, Samsung, Dyson",Safety: Green,https://www.instagram.com/tw_tech_1050/
 tw_beauty_1051,302446,9073,5.8%,beauty,Yes,"SK-II, Estee Lauder",Safety: Green,https://www.instagram.com/tw_beauty_1051/
